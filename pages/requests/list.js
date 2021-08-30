@@ -33,10 +33,10 @@ export async function getServerSideProps({ query: { requestId } }) {
   }
 }
 
-export default function GetRequestPage({ data }) {
+export default function ListRequestPage({ data }) {
   return (
     <>
-      <h1>Request</h1>
+      <h1>Requests List</h1>
       <div>
         {
           Object.entries(data).map((entry) => {
