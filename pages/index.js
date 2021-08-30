@@ -23,14 +23,14 @@ export default function Home() {
           <Link href="/transactions/list">
             <a className="card">
               <h3>Transactions &rarr;</h3>
-              <p>Find in-depth information about Next.js features and API.</p>
+              <p>Find in-depth information about Transactions</p>
             </a>
           </Link>
 
           <Link href={{ pathname: "/requests/get", query: { requestId: '03b691d1-2164-59ba-8b4c-23fc8f4a5b2c' } }}>
             <a className="card">
               <h3>Requests &rarr;</h3>
-              <p>Find in-depth information about Next.js features and API.</p>
+              <p>Find in-depth information about Requests</p>
             </a>
           </Link>
         </div>
