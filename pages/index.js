@@ -170,6 +170,16 @@ export default function Home() {
           height: 1em;
         }
 
+        .status-color--failed {
+          color: red;
+        }
+        .status-color--initiated {
+          color: blue;
+        }
+        .status-color--success {
+          color: green;
+        }
+
         @media (max-width: 600px) {
           .grid {
             width: 100%;

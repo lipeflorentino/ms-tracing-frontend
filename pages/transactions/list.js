@@ -4,53 +4,76 @@ import { URL, URLSearchParams } from 'url';
 
 import moment from 'moment';
 
-export async function getServerSideProps(context) {
-  const myHeaders = new Headers();
+export const getServerSideProps = async ({  }) => {
+    // const state = store.getState();
 
-  const url = new URL(`https://he9svxn2x6.execute-api.us-east-1.amazonaws.com/dev/transactions`);
+    const myHeaders = new Headers();
 
-  url.search = new URLSearchParams({ index: 'createdAt', param: moment().format("YYYY-MM-DD") }).toString();
+    const url = new URL(`https://he9svxn2x6.execute-api.us-east-1.amazonaws.com/dev/transactions/list`);
 
-  const myInit = {
-    method: 'GET',
-    headers: myHeaders,
-    mode: 'cors',
-    cache: 'default',
-  };
+    url.search = new URLSearchParams({ index: 'createdAt', param: '2021-08-30' }).toString();
 
-  const res = await fetch(url, myInit);
+    const myInit = {
+      method: 'GET',
+      headers: myHeaders,
+      mode: 'cors',
+      cache: 'default',
+    };
 
-  const { data, message } = await res.json()
+    const res = await fetch(url, myInit);
 
-  console.log('message', message);
+    const {
+      data: {
+        transactions,
+      },
+      message,
+    } = await res.json();
 
-  if (!data) {
-    return {
-      notFound: true,
+    // store.dispatch(postsUpdateList(posts.slice(0, postsPerPage)));
+
+    console.log('message', { message, transactions });
+
+    if (!transactions) {
+      return {
+        notFound: true,
+      }
     }
-  }
 
-  return {
-    props: { data }, // will be passed to the page component as props
-  }
-}
+    return {
+      props: { transactions }, // will be passed to the page component as props
+    }
+};
 
-export default function ListTransactionsPage({ data }) {
-  console.log('DATA', data);
+export default function ListTransactionsPage({ transactions }) {
   return (
     <>
       <h1>Transactions List</h1>
       <table>
         <thead>
           <tr>
-              <th>Name</th>
+              <th>Id</th>
+              <th>CreatedAt</th>
+              <th>Status</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr>
-            <td>Alvin</td>
-          </tr>
+            {
+              transactions &&
+                transactions.map(({ transactionId, elapsedTime, status }) => {
+                  return (
+                    <tr key={transactionId}>
+                      <td>
+                      <Link href={{ pathname: "/transactions/get", query: { transactionId } }}>
+                        <a>{transactionId}</a>
+                      </Link>
+                      </td>
+                      <td>{(new Date(elapsedTime)).toISOString()}</td>
+                      <td className={'status-color--'+ status}>{status}</td>
+                    </tr>
+                  )
+                })
+            }
         </tbody>
       </table>
       <h2>
