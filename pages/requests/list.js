@@ -2,52 +2,89 @@ import Link from 'next/link'
 
 import { URL, URLSearchParams } from 'url';
 
-export async function getServerSideProps({ query: { requestId } }) {
-  const myHeaders = new Headers();
+import moment from 'moment';
 
-  const url = new URL(`https://he9svxn2x6.execute-api.us-east-1.amazonaws.com/dev/requests`);
+export const getServerSideProps = async ({  }) => {
+    // const state = store.getState();
 
-  url.search = new URLSearchParams({ requestId }).toString();
+    const myHeaders = new Headers();
 
-  const myInit = {
-    method: 'GET',
-    headers: myHeaders,
-    mode: 'cors',
-    cache: 'default',
-  };
+    const url = new URL(`https://he9svxn2x6.execute-api.us-east-1.amazonaws.com/dev/requests/list`);
 
-  const res = await fetch(url, myInit);
+    url.search = new URLSearchParams({ index: 'status', param: 'error' }).toString();
 
-  const { data, message } = await res.json()
+    const myInit = {
+      method: 'GET',
+      headers: myHeaders,
+      mode: 'cors',
+      cache: 'default',
+    };
 
-  console.log('message', message);
+    const res = await fetch(url, myInit);
 
-  if (!data) {
-    return {
-      notFound: true,
+    console.log('RES', res);
+
+    const {
+      data: {
+        requests,
+      },
+      message,
+    } = await res.json();
+
+    // store.dispatch(postsUpdateList(posts.slice(0, postsPerPage)));
+
+    console.log('message', { message, requests });
+
+    if (!requests) {
+      return {
+        notFound: true,
+      }
     }
-  }
 
-  return {
-    props: { data }, // will be passed to the page component as props
-  }
-}
+    return {
+      props: { requests }, // will be passed to the page component as props
+    }
+};
 
-export default function ListRequestPage({ data }) {
+export default function ListRequestsPage({ requests }) {
+  console.log('REQUESTS', requests);
   return (
     <>
       <h1>Requests List</h1>
-      <div>
-        {
-          Object.entries(data).map((entry) => {
-            const key = typeof entry[0] === 'string' ? entry[0] : JSON.stringify(entry[0]);
-            const value = typeof entry[1] === 'string' ? entry[1] : JSON.stringify(entry[1]);
-            return (
-              <p key={key}><strong>{key.toUpperCase()}: </strong> {value}</p>
-            )
-          })
-        }
-      </div>
+      <table>
+        <thead>
+          <tr>
+              <th>Id</th>
+              <th>CreatedAt</th>
+              <th>Service</th>
+              <th>TransactionId</th>
+              <th>type</th>
+              <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+            {
+              requests &&
+              requests.map(({ requestId, transactionId, type, errorTrace, service, elapsedTime, status }) => {
+                  return (
+                    <tr key={requestId}>
+                      <td className='any'>
+                        <Link href={{ pathname: "/requests/get", query: { requestId } }}>
+                          <a>{requestId}</a>
+                        </Link>
+                      </td>
+                      <td>{(new Date(elapsedTime)).toISOString()}</td>
+                      <td>{service}</td>
+                      <td>{transactionId}</td>
+                      <td>{type}</td>
+                      <td className={'status-color--'+ status}>{status}</td>
+                    </tr>
+                  )
+                })
+            }
+        </tbody>
+      </table>
       <h2>
         <Link href="/">
           <a>Back to home</a>
@@ -55,4 +92,4 @@ export default function ListRequestPage({ data }) {
       </h2>
     </>
   )
-};
+}

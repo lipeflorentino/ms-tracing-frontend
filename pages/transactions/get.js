@@ -108,15 +108,17 @@ export default function GetTransactionPage({ data }) {
 
   return (
     <>
-      <h1>Transaction</h1>
-      <div>Transaction Status: {status}</div>
       <div>
-        <Graph
-          graph={graph}
-          options={options}
-          events={events}
-          style={{ height: "300px" }}
-        />
+        <h1>Transaction</h1>
+        <div>Transaction Status: {status}</div>
+        <div>
+          <Graph
+            graph={graph}
+            options={options}
+            events={events}
+            style={{ height: "300px" }}
+          />
+        </div>
       </div>
       <h2>
         <Link href="/">

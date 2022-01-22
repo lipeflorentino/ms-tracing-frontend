@@ -27,7 +27,7 @@ export default function Home() {
             </a>
           </Link>
 
-          <Link href={{ pathname: "/requests/get", query: { requestId: '03b691d1-2164-59ba-8b4c-23fc8f4a5b2c' } }}>
+          <Link href={{ pathname: "/requests/list", query: { requestId: '03b691d1-2164-59ba-8b4c-23fc8f4a5b2c' } }}>
             <a className="card">
               <h3>Requests &rarr;</h3>
               <p>Find in-depth information about Requests</p>
